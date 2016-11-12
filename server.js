@@ -6,7 +6,7 @@ var fs = require('fs');
 const PORT = 8080;
 
 app.get('/', function(request, response){
-    response.end('Path: '+ request.url);
+    response.sendFile(__dirname + '/index.html');
 });
 
 http.listen(PORT, function(){
