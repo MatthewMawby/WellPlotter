@@ -4,6 +4,8 @@ var http = require('http').Server(app);
 var fs = require('fs');
 var formidable = require('formidable');
 var path = require('path');
+var uploads = '/uploads';
+var corrected = '/corrected';
 
 const PORT = 8080;
 
@@ -20,11 +22,17 @@ app.post('/upload', function(req, res){
 
     // store all uploads in the /uploads directory
     form.uploadDir = path.join(__dirname, '/uploads');
+    form.uploadWellDir = path.join(__dirname, '/uploads/wells')
 
     // every time a file has been uploaded successfully,
     // rename it to it's orignal name
     form.on('file', function(field, file) {
-      fs.rename(file.path, path.join(form.uploadDir, file.name));
+        if (field == 'baro'){
+            fs.rename(file.path, path.join(form.uploadDir, file.name));
+        }
+        else{
+            fs.rename(file.path, path.join(form.uploadWellDir, file.name));
+        }
     });
 
     // log any errors that occur
@@ -41,6 +49,11 @@ app.post('/upload', function(req, res){
     form.parse(req);
     res.sendStatus(200);
 });
+
+//runs the barometric corrections on all well files and stores them in the '/corrected' directory
+// fs.readdir(uploads, function(err, files){
+//
+// })
 
 http.listen(PORT, function(){
     console.log("Server listening on: http://localhost:%s", PORT);
