@@ -4,16 +4,12 @@
 #-----------------------------------------------------------------------------------#
 #####################################################################################
 import datetime
-
-#User Input
-barofile = raw_input("Please enter the barometer file name: ")
-infile = raw_input("Please enter the well data file name: ")
-outfile = raw_input("Please enter the output file name: ")
+import sys
 
 #Opens the files
-barofile = open(barofile, 'r')
-infile = open(infile, 'r')
-outfile = open(outfile, 'w')
+barofile = open(str(sys.argv[1]), 'r')
+infile = open(sys.argv[2], 'r')
+outfile = open(sys.argv[3], 'w')
 
 #Handles the headers of the files
 for line in infile:
