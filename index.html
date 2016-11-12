@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 
 <html>
-
     <head>
         <title>WellPlotter</title>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
@@ -36,16 +35,19 @@
 
                 formData.append("baro", baro.files[0], baro.files[0].name);
 
-                $.ajax({
-                  url: '/upload',
-                  type: 'POST',
-                  data: formData,
-                  processData: false,
-                  contentType: false,
-                  success: function(data){
-                      console.log('upload successful!');
-                  }
-                });
+                setTimeout(function(){
+                	$.ajax({
+	                  url: '/upload',
+	                  type: 'POST',
+	                  data: formData,
+	                  processData: false,
+	                  contentType: false,
+	                  success: function(data){
+	                      console.log('upload successful!');
+	                  }
+	                });
+                }, 2000);
+
             }
         </script>
     </body>
