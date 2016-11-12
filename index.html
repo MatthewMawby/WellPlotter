@@ -1,18 +1,52 @@
 <!DOCTYPE html>
 
 <html>
+
     <head>
         <title>WellPlotter</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
+
     <body>
         <div id="uploadmenu">
-            <form id="fileupload">
-                <input type="file" name="baro" mutliple="false">
-                <input type="file" name="lvllog">
-                <input type="submit" value="Submit" onsubmit="processData()">
-            </form>
+            <input type="file" id="baro" name="baro">
+            <input type="file" id="lvllog" name="lvllog[]" multiple="multiple">
+            <input type="submit" value="Submit" onclick="processFiles()">
+
         </div>
+
+        <script>
+            function processFiles(){
+                var baro = document.getElementById("baro");
+                var lvllog = document.getElementById("lvllog");
+
+                var files = lvllog.files;
+
+                var formData = new FormData();
+
+                // loop through all the selected files
+                for (var i = 0; i < files.length; i++) {
+                  var file = files[i];
+
+                  // add the files to formData object for the data payload
+                  formData.append('uploads[]', file, file.name);
+                }
+
+                formData.append("baro", baro.files[0], baro.files[0].name);
+
+                $.ajax({
+                  url: '/upload',
+                  type: 'POST',
+                  data: formData,
+                  processData: false,
+                  contentType: false,
+                  success: function(data){
+                      console.log('upload successful!');
+                  }
+                });
+            }
+        </script>
     </body>
 </html>

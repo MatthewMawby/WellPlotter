@@ -9,6 +9,10 @@ app.get('/', function(request, response){
     response.sendFile(__dirname + '/index.html');
 });
 
+app.post('/upload', function(request, response){
+	console.log("got here");
+});
+
 http.listen(PORT, function(){
     console.log("Server listening on: http://localhost:%s", PORT);
 });
