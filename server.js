@@ -1,10 +1,12 @@
+process.env.TMPDIR= '.';
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var fs = require('fs');
 var formidable = require('formidable');
 var path = require('path');
-var uploads = '/uploads';
+var baro = '/uploads/baro';
+var mwells = '/uploads/wells'
 var corrected = '/corrected';
 
 const PORT = 8080;
@@ -21,14 +23,14 @@ app.post('/upload', function(req, res){
     form.multiples = true;
 
     // store all uploads in the /uploads directory
-    form.uploadDir = path.join(__dirname, '/uploads');
-    form.uploadWellDir = path.join(__dirname, '/uploads/wells')
+    form.uploadBaroDir = path.join(__dirname, '/uploads/baro');
+    form.uploadWellDir = path.join(__dirname, '/uploads/wells');
 
     // every time a file has been uploaded successfully,
     // rename it to it's orignal name
     form.on('file', function(field, file) {
         if (field == 'baro'){
-            fs.rename(file.path, path.join(form.uploadDir, file.name));
+            fs.rename(file.path, path.join(form.uploadBaroDir, file.name));
         }
         else{
             fs.rename(file.path, path.join(form.uploadWellDir, file.name));
