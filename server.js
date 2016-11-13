@@ -10,6 +10,7 @@ const PORT = 8080;
 
 app.use("/corrected", express.static(__dirname+'/corrected'));
 app.use("/node_modules", express.static(__dirname+'/node_modules'));
+app.use("/public", express.static(__dirname+'/public'));
 
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
