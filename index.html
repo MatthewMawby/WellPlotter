@@ -7,9 +7,9 @@
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
         <script src="https://d3js.org/d3.v3.min.js"></script>
         <link href="node_modules/nvd3/build/nv.d3.min.css" rel="stylesheet">
-		<script src="node_modules/nvd3/build/nv.d3.min.js"></script>
-		<script src="node_modules/nvd3/examples/lib/stream_layers.js"></script>
-		<script src="node_modules/d3-queue/build/d3-queue.min.js"></script>
+        <script src="node_modules/nvd3/build/nv.d3.min.js"></script>
+        <script src="node_modules/nvd3/examples/lib/stream_layers.js"></script>
+        <script src="node_modules/d3-queue/build/d3-queue.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="public/styles/stylesheet.css">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -17,8 +17,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
 
-    <body>
+    <body style="background-color: #66B9BF;">
         <div id="uploadmenu">
+            <h1><b>WellPlotter</b></h1>
+            <div style="width: 225px; background-color: #E98E4E;"></div>
             <div class="input-group">
                 <span class="input-group-addon"><i class="glyphicon glyphicon-file"></i></span>
                 <input type="text" id="baroLabel" class="form-control" disabled placeholder="Select Barologger File">
@@ -37,14 +39,15 @@
                 </label>
             </div>
 
-            <label class ="btn btn-success btn-file" style="margin-left: 2cm;">
+            <label class ="btn btn-success btn-file" style="margin-left: 2cm;" id="plotbtn">
                 Plot Data <input type="submit" value="Submit" onclick="processFiles()" style="display: none;">
             </label>
+            <div style="width: 350px; background-color: #E98E4E;"></div>
+        </div>
+        <div id="plots">
+            <svg id="all"></svg>
         </div>
 
-        <div id="plots">
-            <svg id="all" style="width:800px; height:600px;"></svg>
-        </div>
 
         <script>
             $(document).on('change', ':file', function() {
@@ -85,21 +88,21 @@
 
                 formData.append("baro", baro.files[0], baro.files[0].name);
 
-				setTimeout(function(){
-	                $.ajax({
-	                  url: '/upload',
-	                  type: 'POST',
-	                  data: formData,
-	                  processData: false,
-	                  contentType: false,
-	                  success: function(data){
-	                      console.log('upload successful!');
-	                      setTimeout(function(){
-	                      	fetchData();
-	                      }, 3000);
-	                  }
-	                });
-	            }, 1000);
+                setTimeout(function(){
+                    $.ajax({
+                      url: '/upload',
+                      type: 'POST',
+                      data: formData,
+                      processData: false,
+                      contentType: false,
+                      success: function(data){
+                          console.log('upload successful!');
+                          setTimeout(function(){
+                              fetchData();
+                          }, 3000);
+                      }
+                    });
+                }, 1000);
 
             }
 
@@ -136,38 +139,38 @@
                 });
             }
             function fetchData(){
-				var parseTime = function(d, t){
-            		d = d.split("/");
+                var parseTime = function(d, t){
+                    d = d.split("/");
 
-            		t = t.split(":");
-            		return new Date(d[0], d[1], d[2], t[0], t[1], t[2]);
-            	};
-            	var q = d3.queue();
+                    t = t.split(":");
+                    return new Date(d[0], d[1], d[2], t[0], t[1], t[2]);
+                };
+                var q = d3.queue();
 
-            	$.each(files, function(i, file){	
-            		q.defer(function(callback){     
-            			console.log("here", i);           
-		                d3.csv("corrected/"+file.name.substring(0, file.name.indexOf(".")) + "_trimmed.csv", function(d){
-		               		d.Date = parseTime(d.Date, d.Time);
-		               		d.LEVEL = +d.LEVEL;
-		               		return d;
-		                }, function(error, data){
-			               	if(error) throw error;
-			               	console.log(data.length);
-		                	callback(null, {'key': file.name.substring(0, file.name.indexOf(".")), 'values': data.map(function(d){return {x: d.Date, y: d.LEVEL};})});
-						});
-						}
-					);
-            	});
+                $.each(files, function(i, file){
+                    q.defer(function(callback){
+                        console.log("here", i);
+                        d3.csv("corrected/"+file.name.substring(0, file.name.indexOf(".")) + "_trimmed.csv", function(d){
+                               d.Date = parseTime(d.Date, d.Time);
+                               d.LEVEL = +d.LEVEL;
+                               return d;
+                        }, function(error, data){
+                               if(error) throw error;
+                               console.log(data.length);
+                            callback(null, {'key': file.name.substring(0, file.name.indexOf(".")), 'values': data.map(function(d){return {x: d.Date, y: d.LEVEL};})});
+                        });
+                        }
+                    );
+                });
 
-            	q.awaitAll(function(error, data){
-            		console.log("here1");
-            		if(error) throw error;
-            		dat = data;
-            		console.log(dat);
-            		createPlots();
-            	})
-			}
+                q.awaitAll(function(error, data){
+                    console.log("here1");
+                    if(error) throw error;
+                    dat = data;
+                    console.log(dat);
+                    createPlots();
+                })
+            }
         </script>
     </body>
 </html>

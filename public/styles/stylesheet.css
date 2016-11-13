@@ -1,4 +1,6 @@
 .input-group{
+    margin-top: 12px;
+    height: 35px;
     display:flex;
     flex-direction:row;
     margin-left: 2cm;
@@ -10,10 +12,36 @@
 
 .form-control{
     width: 250px;
+    height: 35px;
+}
+
+#plotbtn{
+    margin-top: 12px;
+    height: 35px;
 }
 
 #uploadmenu{
-    display:flex;
-    flex-direction:row;
-    margin-top: 0.5cm;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+    background-color: #E98E4E;
+    height: 60px;
+    width: auto;
+}
+
+#plots{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 35px;
+    height: 800px;
+    width: 1777px;
+}
+
+#all{
+    height: 100%;
+    width: 80%;
+    border: 3px solid black;
+    background-color: white;
+    display: block;
+    margin: auto;
 }
