@@ -5,8 +5,8 @@ var http = require('http').Server(app);
 var fs = require('fs');
 var formidable = require('formidable');
 var path = require('path');
-
 const PORT = 8080;
+
 
 app.use("/corrected", express.static(__dirname+'/corrected'));
 app.use("/node_modules", express.static(__dirname+'/node_modules'));
@@ -17,6 +17,46 @@ app.get('/', function(req, res){
 });
 
 app.post('/upload', function(req, res){
+    
+    //Removes all stored files on startup
+    fs.readdir(__dirname+"/uploads/wells", function(err, files){
+        //loop through all the uploaded well files
+        files.forEach( function(file, index){
+
+            //get the path of the current file and the path for the output file
+            var F = path.join("uploads/wells", file);
+
+            //remove the file
+            fs.unlinkSync(F);
+            });
+    })
+
+    //Removes all stored files on startup
+    fs.readdir(__dirname+"/uploads/baro", function(err, files){
+        //loop through all the uploaded well files
+        files.forEach( function(file, index){
+
+            //get the path of the current file and the path for the output file
+            var F = path.join("uploads/baro", file);
+
+            //remove the file
+            fs.unlinkSync(F);
+            });
+    })
+
+    //Removes all stored files on startup
+    fs.readdir(__dirname+"/corrected", function(err, files){
+        //loop through all the uploaded well files
+        files.forEach( function(file, index){
+
+            //get the path of the current file and the path for the output file
+            var F = path.join("corrected", file);
+
+            //remove the file
+            fs.unlinkSync(F);
+            });
+    })
+
     // create an incoming form object
     var form = new formidable.IncomingForm();
 
