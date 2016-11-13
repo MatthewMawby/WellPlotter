@@ -5,6 +5,7 @@ var http = require('http').Server(app);
 var fs = require('fs');
 var formidable = require('formidable');
 var path = require('path');
+var q = require('d3-queue');
 
 const PORT = 8080;
 
@@ -64,8 +65,8 @@ app.post('/upload', function(req, res){
                 var currCorrect = path.join("corrected", file);
 
                 //run the 'barocorrect.py' script on each well file & save result in 'corrected' directory
-                var python = require('child_process').spawn('python',[script, baroFile, currFile, currCorrect]);
-                var python2 = require('child_process').spawn('python',['trim.py', currCorrect,5]);
+                var python = require('child_process').spawnSync('python',[script, baroFile, currFile, currCorrect]);
+                var python2 = require('child_process').spawnSync('python',['trim.py', currCorrect,10]);
                 });
         });
 

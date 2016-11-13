@@ -43,7 +43,7 @@
         </div>
 
         <div id="plots">
-            <svg id="all" style="width:600px; height:400px;"></svg>
+            <svg id="all" style="width:800px; height:600px;"></svg>
         </div>
 
         <script>
@@ -85,21 +85,21 @@
 
                 formData.append("baro", baro.files[0], baro.files[0].name);
 
-
-                $.ajax({
-                  url: '/upload',
-                  type: 'POST',
-                  data: formData,
-                  processData: false,
-                  contentType: false,
-                  success: function(data){
-                      console.log('upload successful!');
-                      
-                      setTimeout(function(){
-                      	fetchData();
-                      }, 3000);
-                  }
-                });
+				setTimeout(function(){
+	                $.ajax({
+	                  url: '/upload',
+	                  type: 'POST',
+	                  data: formData,
+	                  processData: false,
+	                  contentType: false,
+	                  success: function(data){
+	                      console.log('upload successful!');
+	                      setTimeout(function(){
+	                      	fetchData();
+	                      }, 3000);
+	                  }
+	                });
+	            }, 1000);
 
             }
 
@@ -118,10 +118,10 @@
                       });
 
                   chart.yAxis
-                      .tickFormat(d3.format(',.2f'));
+                      .tickFormat(d3.format(',.5f'));
 
                   chart.y2Axis
-                      .tickFormat(d3.format(',.2f'));
+                      .tickFormat(d3.format(',.5f'));
 
                   var data = dat;
 
@@ -145,15 +145,16 @@
             	var q = d3.queue();
 
             	$.each(files, function(i, file){	
-            		q.defer(function(){     
+            		q.defer(function(callback){     
             			console.log("here", i);           
-		                d3.csv("corrected/"+file.name, function(d){
+		                d3.csv("corrected/"+file.name.substring(0, file.name.indexOf(".")) + "_trimmed.csv", function(d){
 		               		d.Date = parseTime(d.Date, d.Time);
 		               		d.LEVEL = +d.LEVEL;
 		               		return d;
 		                }, function(error, data){
 			               	if(error) throw error;
-		                	return {'key': file.name.substring(0, file.name.indexOf(".")), 'values': data.map(function(d){return {x: d.Date, y: d.LEVEL};})};
+			               	console.log(data.length);
+		                	callback(null, {'key': file.name.substring(0, file.name.indexOf(".")), 'values': data.map(function(d){return {x: d.Date, y: d.LEVEL};})});
 						});
 						}
 					);
@@ -163,10 +164,10 @@
             		console.log("here1");
             		if(error) throw error;
             		dat = data;
+            		console.log(dat);
             		createPlots();
             	})
 			}
-			// .substring(0, file.name.indexOf(".")) + "_trimmed.csv"
         </script>
     </body>
 </html>
