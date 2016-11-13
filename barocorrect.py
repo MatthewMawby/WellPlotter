@@ -65,7 +65,7 @@ else:
         well_date = well_list[0].split('/')
         well_time = well_list[1].split(':')
         date2 = datetime.datetime(int(well_date[0]), int(well_date[1]),
-         int(well_date[2]), (well_time[0]), int(well_time[1]), int(well_time[2]))
+         int(well_date[2]), int(well_time[0]), int(well_time[1]), int(well_time[2]))
         if date1 == date2:
             break
 

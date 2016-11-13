@@ -1,3 +1,4 @@
+process.env.TMPDIR= '.';
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
@@ -19,12 +20,18 @@ app.post('/upload', function(req, res){
     form.multiples = true;
 
     // store all uploads in the /uploads directory
-    form.uploadDir = path.join(__dirname, '/uploads');
+    form.uploadBaroDir = path.join(__dirname, '/uploads/baro');
+    form.uploadWellDir = path.join(__dirname, '/uploads/wells');
 
     // every time a file has been uploaded successfully,
     // rename it to it's orignal name
     form.on('file', function(field, file) {
-      fs.rename(file.path, path.join(form.uploadDir, file.name));
+        if (field == 'baro'){
+            fs.rename(file.path, path.join(form.uploadBaroDir, "baro.csv"));
+        }
+        else{
+            fs.rename(file.path, path.join(form.uploadWellDir, file.name));
+        }
     });
 
     // log any errors that occur
@@ -34,7 +41,24 @@ app.post('/upload', function(req, res){
 
     // once all the files have been uploaded, send a res to the client
     form.on('end', function() {
-      res.end('success');
+        //runs the barometric corrections on all well files and stores them in the '/corrected' directory
+        fs.readdir(__dirname+"/uploads/wells", function(err, files){
+            if (err){
+                console.error("Could not access /uploads/wells", err);
+                process.exit(1);
+            }
+
+            var baroFile = "uploads/baro/baro.csv";
+            var script = "barocorrect.py";
+            files.forEach( function(file, index){
+                var currFile = path.join("uploads/wells", file);
+                var currCorrect = path.join("corrected", file);
+
+                var python = require('child_process').spawn('python',[script, baroFile, currFile, currCorrect]);
+                });
+        });
+
+        res.end('success');
     });
 
     // parse the incoming req containing the form data
