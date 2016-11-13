@@ -41,19 +41,25 @@ app.post('/upload', function(req, res){
 
     // once all the files have been uploaded, send a res to the client
     form.on('end', function() {
-        //runs the barometric corrections on all well files and stores them in the '/corrected' directory
+        //read files in the uploads/wells directory
         fs.readdir(__dirname+"/uploads/wells", function(err, files){
             if (err){
                 console.error("Could not access /uploads/wells", err);
                 process.exit(1);
             }
 
+            //the location of the selected barometer file & the name of the python script
             var baroFile = "uploads/baro/baro.csv";
             var script = "barocorrect.py";
+
+            //loop through all the uploaded well files
             files.forEach( function(file, index){
+                
+                //get the path of the current file and the path for the output file
                 var currFile = path.join("uploads/wells", file);
                 var currCorrect = path.join("corrected", file);
 
+                //run the 'barocorrect.py' script on each well file & save result in 'corrected' directory
                 var python = require('child_process').spawn('python',[script, baroFile, currFile, currCorrect]);
                 });
         });
