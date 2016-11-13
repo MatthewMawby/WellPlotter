@@ -17,7 +17,7 @@ app.get('/', function(req, res){
 });
 
 app.post('/upload', function(req, res){
-    
+
     //Removes all stored files on startup
     fs.readdir(__dirname+"/uploads/wells", function(err, files){
         //loop through all the uploaded well files
@@ -94,7 +94,7 @@ app.post('/upload', function(req, res){
 
             //the location of the selected barometer file & the name of the python script
             var baroFile = "uploads/baro/baro.csv";
-            var script = "barocorrect.py";
+            var script = "python/barocorrect.py";
 
             //loop through all the uploaded well files
             files.forEach( function(file, index){
@@ -105,7 +105,7 @@ app.post('/upload', function(req, res){
 
                 //run the 'barocorrect.py' script on each well file & save result in 'corrected' directory
                 var python = require('child_process').spawnSync('python',[script, baroFile, currFile, currCorrect]);
-                var python2 = require('child_process').spawnSync('python',['trim.py', currCorrect,10]);
+                var python2 = require('child_process').spawnSync('python',['python/trim.py', currCorrect,10]);
                 });
         });
 
