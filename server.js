@@ -9,6 +9,7 @@ var path = require('path');
 const PORT = 8080;
 
 app.use("/corrected", express.static(__dirname+'/corrected'));
+app.use("/node_modules", express.static(__dirname+'/node_modules'));
 
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
