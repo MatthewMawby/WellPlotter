@@ -8,6 +8,8 @@ var path = require('path');
 
 const PORT = 8080;
 
+app.use("/corrected", express.static(__dirname+'/corrected'));
+
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/index.html');
 });
@@ -65,6 +67,8 @@ app.post('/upload', function(req, res){
     form.parse(req);
     res.sendStatus(200);
 });
+
+
 
 http.listen(PORT, function(){
     console.log("Server listening on: http://localhost:%s", PORT);

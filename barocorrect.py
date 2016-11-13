@@ -13,8 +13,8 @@ outfile = open(sys.argv[3], 'w')
 
 #Handles the headers of the files
 for line in infile:
-    outfile.write(line)
     if line.strip() == "Date,Time,ms,LEVEL,TEMPERATURE":
+        outfile.write(line)
         break
 
 for line in barofile:
