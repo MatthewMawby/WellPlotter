@@ -7,8 +7,8 @@
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
         <script src="https://d3js.org/d3.v3.min.js"></script>
         <link href="node_modules/nvd3/build/nv.d3.min.css" rel="stylesheet">
-		<script src="node_modules/nvd3/build/nv.d3.min.js"></script>
-		<script src="node_modules/nvd3/examples/lib/stream_layers.js"></script>
+        <script src="node_modules/nvd3/build/nv.d3.min.js"></script>
+        <script src="node_modules/nvd3/examples/lib/stream_layers.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="public/styles/stylesheet.css">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -42,7 +42,7 @@
         </div>
 
         <div id="plots">
-        	<svg id="all" style="width:600px; height:400px;"></svg>
+            <svg id="all" style="width:600px; height:400px;"></svg>
         </div>
 
         <script>
@@ -64,11 +64,11 @@
         </script>
 
         <script>
-        	var files = [];
-        	var dat = [];
+            var files = [];
+            var dat = [];
             function processFiles(){
                 var baro = document.getElementById("baro");
-                var lvllog = document.getElementById("lvllog");
+                var lvllog = document.getElementById("well");
 
                 files = lvllog.files;
 
@@ -84,7 +84,7 @@
 
                 formData.append("baro", baro.files[0], baro.files[0].name);
 
-                
+
                 $.ajax({
                   url: '/upload',
                   type: 'POST',
@@ -95,66 +95,66 @@
                       console.log('upload successful!');
                       fetchData();
                       setTimeout(function(){
-                      	createPlots();
+                          createPlots();
                       }, 3000);
                   }
                 });
-                
+
             }
 
             function createPlots(){
-            	nv.addGraph(function() {
-				  var chart = nv.models.lineWithFocusChart();
+                nv.addGraph(function() {
+                  var chart = nv.models.lineWithFocusChart();
 
-				  chart.xAxis
-				  	.tickFormat(function(d) {
-			            return d3.time.format('%x')(new Date(d))
-			          });
+                  chart.xAxis
+                      .tickFormat(function(d) {
+                        return d3.time.format('%x')(new Date(d))
+                      });
 
-				  chart.x2Axis
-				  	.tickFormat(function(d) {
-			            return d3.time.format('%x')(new Date(d))
-			          });
+                  chart.x2Axis
+                      .tickFormat(function(d) {
+                        return d3.time.format('%x')(new Date(d))
+                      });
 
-				  chart.yAxis
-				      .tickFormat(d3.format(',.2f'));
+                  chart.yAxis
+                      .tickFormat(d3.format(',.2f'));
 
-				  chart.y2Axis
-				      .tickFormat(d3.format(',.2f'));
+                  chart.y2Axis
+                      .tickFormat(d3.format(',.2f'));
 
-				  var data = dat;
+                  var data = dat;
 
-				  d3.select('svg#all')
-				      .datum(data)
-				      .transition().duration(500)
-				      .call(chart);
+                  d3.select('svg#all')
+                      .datum(data)
+                      .transition().duration(500)
+                      .call(chart);
 
-				  nv.utils.windowResize(chart.update);
-				  console.log(data);
-				  return chart;
-				});
+                  nv.utils.windowResize(chart.update);
+                  console.log(data);
+                  return chart;
+                });
             }
             function fetchData(){
-				var parseTime = function(d, t){
-            		d = d.split("/");
+                var parseTime = function(d, t){
+                    d = d.split("/");
 
-            		t = t.split(":");
-            		return new Date(d[0], d[1], d[2], t[0], t[1], t[2]);
-            	};
-            	$.each(files, function(i, file){	                
-	                d3.csv("corrected/"+file.name, function(d){
-	               		d.Date = parseTime(d.Date, d.Time);
-	               		d.LEVEL = +d.LEVEL;
-	               		return d;
-	                }, function(error, data){
-		               	if(error) throw error;
-	                  	data = data.map(function(d){return {x: d.Date, y: d.LEVEL};});
-	                  	console.log(data.size());
-	                	dat.push({'key': file.name.substring(0, file.name.indexOf(".")), 'values': data});
-					});
+                    t = t.split(":");
+                    return new Date(d[0], d[1], d[2], t[0], t[1], t[2]);
+                };
+                $.each(files, function(i, file){
+                    d3.csv("corrected/"+file.name, function(d){
+                           d.Date = parseTime(d.Date, d.Time);
+                           d.LEVEL = +d.LEVEL;
+                           return d;
+                    }, function(error, data){
+                           if(error) throw error;
+                          data = data.map(function(d){return {x: d.Date, y: d.LEVEL};});
+                          console.log(data.length);
+                        dat.push({'key': file.name.substring(0, file.name.indexOf(".")), 'values': data});
+                    });
 
-            	});
-			}
+                });
+            }
         </script>
     </body>
 </html>
