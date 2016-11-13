@@ -58,13 +58,14 @@ app.post('/upload', function(req, res){
 
             //loop through all the uploaded well files
             files.forEach( function(file, index){
-                
+
                 //get the path of the current file and the path for the output file
                 var currFile = path.join("uploads/wells", file);
                 var currCorrect = path.join("corrected", file);
 
                 //run the 'barocorrect.py' script on each well file & save result in 'corrected' directory
                 var python = require('child_process').spawn('python',[script, baroFile, currFile, currCorrect]);
+                var python2 = require('child_process').spawn('python',['trim.py', currCorrect,5]);
                 });
         });
 

@@ -43,7 +43,7 @@
         </div>
 
         <div id="plots">
-        	<svg id="all" style="width:600px; height:400px;"></svg>
+            <svg id="all" style="width:600px; height:400px;"></svg>
         </div>
 
         <script>
@@ -65,8 +65,8 @@
         </script>
 
         <script>
-        	var files = [];
-        	var dat = [];
+            var files = [];
+            var dat = [];
             function processFiles(){
                 var baro = document.getElementById("baro");
                 var lvllog = document.getElementById("well");
@@ -85,7 +85,7 @@
 
                 formData.append("baro", baro.files[0], baro.files[0].name);
 
-                
+
                 $.ajax({
                   url: '/upload',
                   type: 'POST',
@@ -100,40 +100,40 @@
                       }, 3000);
                   }
                 });
-                
+
             }
 
             function createPlots(){
-            	nv.addGraph(function() {
-				  var chart = nv.models.lineWithFocusChart();
+                nv.addGraph(function() {
+                  var chart = nv.models.lineWithFocusChart();
 
-				  chart.xAxis
-				  	.tickFormat(function(d) {
-			            return d3.time.format('%x')(new Date(d))
-			          });
+                  chart.xAxis
+                      .tickFormat(function(d) {
+                        return d3.time.format('%x')(new Date(d))
+                      });
 
-				  chart.x2Axis
-				  	.tickFormat(function(d) {
-			            return d3.time.format('%x')(new Date(d))
-			          });
+                  chart.x2Axis
+                      .tickFormat(function(d) {
+                        return d3.time.format('%x')(new Date(d))
+                      });
 
-				  chart.yAxis
-				      .tickFormat(d3.format(',.2f'));
+                  chart.yAxis
+                      .tickFormat(d3.format(',.2f'));
 
-				  chart.y2Axis
-				      .tickFormat(d3.format(',.2f'));
+                  chart.y2Axis
+                      .tickFormat(d3.format(',.2f'));
 
-				  var data = dat;
+                  var data = dat;
 
-				  d3.select('svg#all')
-				      .datum(data)
-				      .transition().duration(500)
-				      .call(chart);
+                  d3.select('svg#all')
+                      .datum(data)
+                      .transition().duration(500)
+                      .call(chart);
 
-				  nv.utils.windowResize(chart.update);
-				  console.log(data);
-				  return chart;
-				});
+                  nv.utils.windowResize(chart.update);
+                  console.log(data);
+                  return chart;
+                });
             }
             function fetchData(){
 				var parseTime = function(d, t){
