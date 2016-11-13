@@ -5,7 +5,7 @@ var http = require('http').Server(app);
 var fs = require('fs');
 var formidable = require('formidable');
 var path = require('path');
-const PORT = 8080;
+const PORT = process.env.PORT || 5000;
 
 
 app.use("/corrected", express.static(__dirname+'/corrected'));
