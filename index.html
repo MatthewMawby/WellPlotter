@@ -4,7 +4,10 @@
 
     <head>
         <title>WellPlotter</title>
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="public/styles/stylesheet.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="https://d3js.org/d3.v4.min.js"></script>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,21 +15,54 @@
 
     <body>
         <div id="uploadmenu">
-            <input type="file" id="baro" name="baro">
-            <input type="file" id="lvllog" name="lvllog[]" multiple="multiple">
-            <input type="submit" value="Submit" onclick="processFiles()">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="glyphicon glyphicon-file"></i></span>
+                <input type="text" id="baroLabel" class="form-control" disabled placeholder="Select Barologger File">
+                <label class ="btn btn-default">
+                    <i class="glyphicon glyphicon-search"></i>
+                    Browse... <input type="file" id="baro" name="baro" style="display: none;">
+                </label>
+            </div>
 
-            <input type="submit" value="Plot" onclick="createPlots()">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="glyphicon glyphicon-file"></i></span>
+                <input type="text" id="wellLabel" class="form-control" disabled placeholder="Select Barologger File">
+                <label class ="btn btn-default">
+                    <i class="glyphicon glyphicon-search"></i>
+                    Browse... <input type="file" id="well" name="lvllog[]" multiple="multiple" style="display: none;">
+                </label>
+            </div>
+
+            <label class ="btn btn-success btn-file" style="margin-left: 2cm;">
+                Plot Data <input type="submit" value="Submit" onclick="processFiles()" style="display: none;">
+            </label>
         </div>
+
 
         <div id="plots">
-        	<svg id="all" style="width:1000px; height:1000px;"></svg>
-
+            <svg id="all" style="width:1000px; height:1000px;"></svg>
         </div>
 
+        <script>
+            $(document).on('change', ':file', function() {
+                var input = $(this),
+                    numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                    label = input.val().replace(/\\/g, '/').replace(/.*\//, ''),
+                    id = input.attr("id"),
+                    id = "#" + id + "Label";
+
+                if (numFiles>1){
+                    $(id).attr("placeholder", numFiles+" files selected");
+                }
+                else{
+                    $(id).attr("placeholder", label+" selected");
+                }
+                input.trigger('fileselect', [numFiles, label]);
+            });
+        </script>
 
         <script>
-        	var files = [];
+            var files = [];
             function processFiles(){
                 var baro = document.getElementById("baro");
                 var lvllog = document.getElementById("lvllog");
@@ -60,74 +96,74 @@
             }
 
             function createPlots(){
-            	var svg = d3.select("svg#all"),
-            	margin = {top: 20, right: 20, bottom: 30, left: 50},
-			    width = 600 - margin.left - margin.right,
-			    height = 400 - margin.top - margin.bottom,
-			    g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-			    console.log(width, height, margin);
+                var svg = d3.select("svg#all"),
+                margin = {top: 20, right: 20, bottom: 30, left: 50},
+                width = 600 - margin.left - margin.right,
+                height = 400 - margin.top - margin.bottom,
+                g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                console.log(width, height, margin);
 
-            	var parseTime = function(d, t){
-            		d = d.split("/");
-            		t = t.split(":");
-            		return new Date(d[0], d[1], d[2], t[0], t[1], t[2]);
-            	};
+                var parseTime = function(d, t){
+                    d = d.split("/");
+                    t = t.split(":");
+                    return new Date(d[0], d[1], d[2], t[0], t[1], t[2]);
+                };
 
-				var x = d3.scaleTime()
-					.domain([new Date(2016,07,30,14,0,0), new Date(2016,07,31,23,59,59)])
-				    .rangeRound([0, width]);
+                var x = d3.scaleTime()
+                    .domain([new Date(2016,07,30,14,0,0), new Date(2016,07,31,23,59,59)])
+                    .rangeRound([0, width]);
 
-				var y = d3.scaleLinear()
-					.domain([100, 180])
-				    .rangeRound([height, 0]);
-
-
-            	var line = d3.line()
-            		.x(function(d) {return x(d.Date);})
-            		.y(function(d) {return y(d.LEVEL);});
+                var y = d3.scaleLinear()
+                    .domain([100, 180])
+                    .rangeRound([height, 0]);
 
 
-            	var colors = ["red", "blue", "green", "yellow", "black", "purple", "pink", "brown", "orange"];
+                var line = d3.line()
+                    .x(function(d) {return x(d.Date);})
+                    .y(function(d) {return y(d.LEVEL);});
 
-            	for (var i = 1; i < files.length; i++) {
+
+                var colors = ["red", "blue", "green", "yellow", "black", "purple", "pink", "brown", "orange"];
+
+                for (var i = 1; i < files.length; i++) {
                   var file = files[i];
 
                   d3.csv("corrected/"+file.name, function(d){
-                  		d.Date = parseTime(d.Date, d.Time);
-                  		d.LEVEL = +d.LEVEL;
-                  		return d;
+                          d.Date = parseTime(d.Date, d.Time);
+                          d.LEVEL = +d.LEVEL;
+                          return d;
                   }, function(error, data){
-	                  	if(error) throw error;
-	                  	data = data.map(function(d){return {Date: d.Date, LEVEL: d.LEVEL};});
-	                  	console.log(data);
-	                  	x.domain(d3.extent(data, function(d) { return d.Date; }));
-  						y.domain([d3.min(data,function(d) {return d.LEVEL;}), d3.max(data, function(d) { return d.LEVEL; })]);
+                          if(error) throw error;
+                          data = data.map(function(d){return {Date: d.Date, LEVEL: d.LEVEL};});
+                          console.log(data);
+                          x.domain(d3.extent(data, function(d) { return d.Date; }));
+                          y.domain([d3.min(data,function(d) {return d.LEVEL;}), d3.max(data, function(d) { return d.LEVEL; })]);
 
-   						g.append("path")
-					      .datum(data)
-					      .attr("class", "line" + i)
-					      .style("stroke", colors.pop())
-					      .style("fill", "none")
-					      .attr("d", line(data));
-					});
-				}
+                           g.append("path")
+                          .datum(data)
+                          .attr("class", "line" + i)
+                          .style("stroke", colors.pop())
+                          .style("fill", "none")
+                          .attr("d", line(data));
+                    });
+                }
 
-				g.append("g")
-			      .attr("class", "axis axis--x")
-			      .attr("transform", "translate(0," + height + ")")
-				  .call(d3.axisBottom(x));
+                g.append("g")
+                  .attr("class", "axis axis--x")
+                  .attr("transform", "translate(0," + height + ")")
+                  .call(d3.axisBottom(x));
 
-				g.append("g")
-			      .attr("class", "axis axis--y")
-			      .call(d3.axisLeft(y));
+                g.append("g")
+                  .attr("class", "axis axis--y")
+                  .call(d3.axisLeft(y));
 
-			    g.append("text")
-					    .attr("fill", "#000")
-					    .attr("transform", "rotate(-90)")
-					    .attr("y", 6)
-					    .attr("dy", "0.71em")
-					    .style("text-anchor", "end")
-					    .text("Level (ft)");
+                g.append("text")
+                        .attr("fill", "#000")
+                        .attr("transform", "rotate(-90)")
+                        .attr("y", 6)
+                        .attr("dy", "0.71em")
+                        .style("text-anchor", "end")
+                        .text("Level (ft)");
             }
         </script>
     </body>
