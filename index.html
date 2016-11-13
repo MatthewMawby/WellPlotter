@@ -9,6 +9,7 @@
         <link href="node_modules/nvd3/build/nv.d3.min.css" rel="stylesheet">
 		<script src="node_modules/nvd3/build/nv.d3.min.js"></script>
 		<script src="node_modules/nvd3/examples/lib/stream_layers.js"></script>
+		<script src="node_modules/d3-queue/build/d3-queue.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="public/styles/stylesheet.css">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -68,7 +69,7 @@
         	var dat = [];
             function processFiles(){
                 var baro = document.getElementById("baro");
-                var lvllog = document.getElementById("lvllog");
+                var lvllog = document.getElementById("well");
 
                 files = lvllog.files;
 
@@ -93,9 +94,9 @@
                   contentType: false,
                   success: function(data){
                       console.log('upload successful!');
-                      fetchData();
+                      
                       setTimeout(function(){
-                      	createPlots();
+                      	fetchData();
                       }, 3000);
                   }
                 });
@@ -141,20 +142,31 @@
             		t = t.split(":");
             		return new Date(d[0], d[1], d[2], t[0], t[1], t[2]);
             	};
-            	$.each(files, function(i, file){	                
-	                d3.csv("corrected/"+file.name, function(d){
-	               		d.Date = parseTime(d.Date, d.Time);
-	               		d.LEVEL = +d.LEVEL;
-	               		return d;
-	                }, function(error, data){
-		               	if(error) throw error;
-	                  	data = data.map(function(d){return {x: d.Date, y: d.LEVEL};});
-	                  	console.log(data.size());
-	                	dat.push({'key': file.name.substring(0, file.name.indexOf(".")), 'values': data});
-					});
+            	var q = d3.queue();
 
+            	$.each(files, function(i, file){	
+            		q.defer(function(){     
+            			console.log("here", i);           
+		                d3.csv("corrected/"+file.name, function(d){
+		               		d.Date = parseTime(d.Date, d.Time);
+		               		d.LEVEL = +d.LEVEL;
+		               		return d;
+		                }, function(error, data){
+			               	if(error) throw error;
+		                	return {'key': file.name.substring(0, file.name.indexOf(".")), 'values': data.map(function(d){return {x: d.Date, y: d.LEVEL};})};
+						});
+						}
+					);
             	});
+
+            	q.awaitAll(function(error, data){
+            		console.log("here1");
+            		if(error) throw error;
+            		dat = data;
+            		createPlots();
+            	})
 			}
+			// .substring(0, file.name.indexOf(".")) + "_trimmed.csv"
         </script>
     </body>
 </html>
