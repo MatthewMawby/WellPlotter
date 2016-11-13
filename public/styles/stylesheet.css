@@ -1,0 +1,19 @@
+.input-group{
+    display:flex;
+    flex-direction:row;
+    margin-left: 2cm;
+}
+
+.input-group-addon{
+    min-width:40px;
+}
+
+.form-control{
+    width: 250px;
+}
+
+#uploadmenu{
+    display:flex;
+    flex-direction:row;
+    margin-top: 0.5cm;
+}
