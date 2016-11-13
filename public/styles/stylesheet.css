@@ -6,41 +6,42 @@
     margin-left: 2cm;
 }
 
-.input-group-addon{
-    min-width:40px;
-}
-
 .form-control{
     width: 250px;
     height: 35px;
 }
 
-#plotbtn{
-    margin-top: 12px;
-    height: 35px;
+.input-group-addon{
+    min-width: 35px;
 }
 
 #uploadmenu{
-    justify-content: center;
+    justify-content: space-evenly;
     display: flex;
     flex-direction: row;
     background-color: #E98E4E;
     height: 60px;
-    width: auto;
+    width: 100%;
+}
+
+.btn-browse{
+    border-bottom-left-radius: 0px;
+    border-top-left-radius: 0px;
 }
 
 #plots{
     margin-left: auto;
     margin-right: auto;
     margin-top: 35px;
-    height: 800px;
-    width: 1777px;
+    height: 65rem;
+    width: 100%;
 }
 
 #all{
     height: 100%;
     width: 80%;
-    border: 3px solid black;
+    border: 2px solid black;
+    border-radius: 2px;
     background-color: white;
     display: block;
     margin: auto;
