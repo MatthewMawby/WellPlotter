@@ -4,7 +4,7 @@
 
     <head>
         <title>WellPlotter</title>
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
         <script src="https://d3js.org/d3.v3.min.js"></script>
         <link href="node_modules/nvd3/build/nv.d3.min.css" rel="stylesheet">
         <script src="node_modules/nvd3/build/nv.d3.min.js"></script>
@@ -30,14 +30,14 @@
             </div>
             <div class="input-group">
                 <span class="input-group-addon"><i class="glyphicon glyphicon-file"></i></span>
-                <input type="text" id="wellLabel" class="form-control" disabled placeholder="Select Barologger File">
+                <input type="text" id="wellLabel" class="form-control" disabled placeholder="Select Well Files">
                 <label class ="btn btn-default btn-browse">
                     <i class="glyphicon glyphicon-search"></i>
                     Browse... <input type="file" id="well" name="lvllog[]" multiple="multiple" style="display: none;">
                 </label>
                 <label class ="btn btn-success btn-file" style="margin-left: 2cm;" id="plotbtn">
-	                Plot Data <input type="submit" value="Submit" onclick="processFiles()" style="display: none;">
-	            </label>
+                    Plot Data <input type="submit" value="Submit" onclick="processFiles()" style="display: none;">
+                </label>
             </div>
         </div>
         <div id="plots">
