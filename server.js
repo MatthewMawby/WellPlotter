@@ -92,9 +92,12 @@ app.post('/upload', function(req, res){
                 process.exit(1);
             }
 
+            console.log("before loop");
+
             //the location of the selected barometer file & the name of the python script
             var baroFile = "uploads/baro/baro.csv";
-            var script = "python/barocorrect.py";
+            var baroscript = "python/barocorrect.py";
+            var trimscript = "python/trim.py";
 
             //loop through all the uploaded well files
             files.forEach( function(file, index){
@@ -103,9 +106,15 @@ app.post('/upload', function(req, res){
                 var currFile = path.join("uploads/wells", file);
                 var currCorrect = path.join("corrected", file);
 
+                console.log("creating python childrens");
+
                 //run the 'barocorrect.py' script on each well file & save result in 'corrected' directory
-                var python = require('child_process').spawnSync('python',[script, baroFile, currFile, currCorrect]);
-                var python2 = require('child_process').spawnSync('python',['python/trim.py', currCorrect,10]);
+                var python = require('child_process').spawnSync('python',[baroscript, baroFile, currFile, currCorrect]);
+
+                var python2 = require('child_process').spawnSync('python',[trimscript, currCorrect,10]);
+
+                console.log("python childrenses made");
+
                 });
         });
 

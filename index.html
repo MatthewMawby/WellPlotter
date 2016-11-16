@@ -95,7 +95,7 @@
                           console.log('upload successful!');
                           setTimeout(function(){
                               fetchData();
-                          }, 20000);
+                          }, 3000);
                       }
                     });
                 }, 1000);
@@ -146,6 +146,7 @@
                 $.each(files, function(i, file){
                     q.defer(function(callback){
                         console.log("here", i);
+                        console.log(file.name.substring(0, file.name.indexOf(".")) + "_trimmed.csv");
                         d3.csv("corrected/"+file.name.substring(0, file.name.indexOf(".")) + "_trimmed.csv", function(d){
                                d.Date = parseTime(d.Date, d.Time);
                                d.LEVEL = +d.LEVEL;

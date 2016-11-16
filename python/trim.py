@@ -4,6 +4,7 @@ import sys
 infile = open(sys.argv[1], 'r')
 outfile_name = sys.argv[1].split('.')
 outname = outfile_name[0]+"_trimmed.csv"
+print outname
 outfile = open(outname, 'w')
 interval = int(sys.argv[2])
 
