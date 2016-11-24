@@ -110,11 +110,10 @@ app.post('/upload', function(req, res){
 
                 //run the 'barocorrect.py' script on each well file & save result in 'corrected' directory
                 var python = require('child_process').spawnSync('python',[baroscript, baroFile, currFile, currCorrect]);
-
                 var python2 = require('child_process').spawnSync('python',[trimscript, currCorrect,10]);
 
-                console.log("python childrenses made");
 
+                console.log("python childrenses made");
                 });
         });
 
